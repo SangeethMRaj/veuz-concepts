@@ -2,15 +2,13 @@ import { useState } from 'react';
 import ActivityGraph from '../components/ActivityGraph';
 import TimelineGraph, { type TimeSegment } from '../components/TimelineGraph';
 import OfflineRequestModal from '../components/OfflineRequestModal';
-import './MachineTest.css';
+import './Dashboard.css';
 
-const MachineTest = () => {
+const Dashboard = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedSegmentKey, setSelectedSegmentKey] = useState<string | null>(null);
     const [selectedIdleSegment, setSelectedIdleSegment] = useState<TimeSegment | null>(null);
 
-    // Initial Segments Data (Lifted from TimelineGraph)
-    // Note: We've added explicit durations for data generation logic.
     const [segments, setSegments] = useState<Record<string, TimeSegment>>({
         seg1: { color: '#2196f3', label: 'Work', status: 'work', from: '09:00 AM', to: '10:00 AM', duration: 60 },
         seg2: { color: '#e0e0e0', label: 'Idle', status: 'idle', from: '10:00 AM', to: '10:30 AM', duration: 30 },
@@ -31,12 +29,10 @@ const MachineTest = () => {
     const handleSaveRequest = (productivity: string) => {
         if (!selectedSegmentKey) return;
 
-        // Update the specific segment
         setSegments(prev => {
             const updated = { ...prev };
             const segment = updated[selectedSegmentKey];
 
-            // Map productivity to status and color
             let newStatus: TimeSegment['status'] = 'neutral';
             let newColor = '#cfd8dc'; // default neutral grey
 
@@ -68,19 +64,16 @@ const MachineTest = () => {
                 <h1>Dashboard</h1>
             </header>
 
-            {/* Combined Graph Container */}
             <div style={{
                 background: '#fff',
                 borderRadius: '12px',
                 boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
                 padding: '20px',
-                // maxWidth: '1000px', // Optional max-width
                 margin: '0 auto',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '0' // Critical for alignment
+                gap: '0' 
             }}>
-                {/* Header Legend */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
                     <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 'bold' }}>Tracked Hours</h3>
                     <div style={{ display: 'flex', gap: '15px', fontSize: '12px', alignItems: 'center' }}>
@@ -90,7 +83,6 @@ const MachineTest = () => {
                     </div>
                 </div>
 
-                {/* Top Graph: Activity */}
                 <div style={{ height: '300px', width: '100%' }}>
                     <ActivityGraph segments={segments} />
                 </div>
@@ -111,4 +103,4 @@ const MachineTest = () => {
     );
 };
 
-export default MachineTest;
+export default Dashboard;

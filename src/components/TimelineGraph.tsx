@@ -23,7 +23,6 @@ interface TimelineGraphProps {
     onIdleClick: (key: string, segment: TimeSegment) => void;
 }
 
-// Filter payload to find the relevant segment if possible, or rely on hoveredKey
 interface TooltipContentProps {
     active?: boolean;
     segments: Record<string, TimeSegment>;
@@ -47,11 +46,10 @@ const TooltipContent = ({ active, segments, hoveredKey }: TooltipContentProps) =
         if (seg.status === 'idle') label = 'Idle';
         else if (seg.status === 'neutral') label = 'Neutral';
         else if (seg.status === 'unproductive') label = 'Unproductive';
-        // 'work' and 'productive' are already 'Online' (default)
 
         return (
             <div style={{
-                backgroundColor: 'rgba(33, 33, 33, 0.9)', // Dark grey/black
+                backgroundColor: 'rgba(33, 33, 33, 0.9)', 
                 color: '#fff',
                 padding: '8px 12px',
                 borderRadius: '6px',
@@ -88,8 +86,6 @@ const TimelineGraph = ({ segments, onIdleClick }: TimelineGraphProps) => {
         }
     };
 
-    // To render ticks as hours (9AM, 10AM...), we need a domain of 0 to 540 (9 hours * 60)
-    // Ticks every 60
     const ticks = [0, 60, 120, 180, 240, 300, 360, 420, 480, 540];
     const formatTick = (tick: number) => {
         const hour = 9 + (tick / 60);
@@ -120,7 +116,7 @@ const TimelineGraph = ({ segments, onIdleClick }: TimelineGraphProps) => {
                     <YAxis
                         type="category"
                         dataKey="name"
-                        width={30} // Match ActivityGraph YAxis width for alignment
+                        width={30}
                         tick={false}
                         axisLine={false}
                     />

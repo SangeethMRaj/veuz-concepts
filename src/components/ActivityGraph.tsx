@@ -10,8 +10,8 @@ import { useState } from 'react';
 import { type TimeSegment } from './TimelineGraph';
 
 interface ActivityData {
-    timeDisplay: string; // "10:00"
-    minutesFromStart: number; // 0, 5, 10...
+    timeDisplay: string;
+    minutesFromStart: number;
     productive: number;
     unproductive: number;
     neutral: number;
@@ -22,8 +22,6 @@ interface ActivityData {
     };
 }
 
-// Custom Tooltip Component
-// Custom Tooltip Component
 interface CustomTooltipProps {
     active?: boolean;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -31,21 +29,14 @@ interface CustomTooltipProps {
     hoveredStack?: string | null;
 }
 
-// Custom Tooltip Component
 const CustomTooltip = ({ active, payload, hoveredStack }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
         const data = payload[0].payload as ActivityData;
 
-        // If hovering a specific part of the stack, prioritize that.
-        // Otherwise, show all non-zero.
         let entries = payload;
         if (hoveredStack) {
             entries = payload.filter((entry: any) => entry.name === hoveredStack);
         }
-
-        // Calculate Header Percentage based on what we are showing
-        // If hoveredStack is present, show its %. If not, maybe show "Total" or just time?
-        // Let's stick to the design: Header is Type + %.
 
         return (
             <div style={{
@@ -67,7 +58,6 @@ const CustomTooltip = ({ active, payload, hoveredStack }: CustomTooltipProps) =>
                     const apps = data.apps[type] || [];
                     const color = entry.color;
 
-                    // Capitalize
                     const title = type.charAt(0).toUpperCase() + type.slice(1);
 
                     return (
@@ -89,7 +79,7 @@ const CustomTooltip = ({ active, payload, hoveredStack }: CustomTooltipProps) =>
                                 {apps.length > 0 ? apps.map((app, i) => (
                                     <div key={i} style={{ display: 'flex', justifyContent: 'space-between', color: '#555' }}>
                                         <span>{app}</span>
-                                        {/* Mock time per app since we don't have granular app data, just distribute total value */}
+                                        
                                         <span style={{ fontWeight: '500' }}>
                                             {i === 0 ? Math.round(value * 60) + 's' : ''}
                                         </span>
@@ -122,9 +112,8 @@ const CustomTooltip = ({ active, payload, hoveredStack }: CustomTooltipProps) =>
     return null;
 };
 
-// Generate data dynamically based on shared segments
 const generateData = (segments: Record<string, TimeSegment>) => {
-    const totalMinutes = 540; // 9AM to 6PM
+    const totalMinutes = 540;
     const interval = 5;
     const slots = totalMinutes / interval;
 
@@ -136,14 +125,8 @@ const generateData = (segments: Record<string, TimeSegment>) => {
         return `${h < 10 ? '0' + h : h}:${m < 10 ? '0' + m : m} ${ampm}`;
     };
 
-    // Convert segments object to ordered array of ranges for easier lookup
-    // Assuming keys are sorted or we can just iterate.
-    // Let's build a timeline map.
     let currentTime = 0;
     const timeline: { start: number; end: number; status: string }[] = [];
-
-    // We assume keys are in order seg1, seg2, ... seg8 for this to work perfectly.
-    // Since we're controlling the data in MachineTest, we can ensure this order.
     Object.keys(segments).forEach(key => {
         const duration = segments[key].duration || 0;
         timeline.push({
@@ -158,9 +141,6 @@ const generateData = (segments: Record<string, TimeSegment>) => {
 
     for (let i = 0; i < slots; i++) {
         const currentMin = i * interval;
-        // Find which segment this minute falls into
-        // We look for where currentMin is >= start and < end
-        // For the 5 min block, we assume the status of the start time applies to the whole block
         const segment = timeline.find(seg => currentMin >= seg.start && currentMin < seg.end);
         const status = segment ? segment.status : 'idle';
 
@@ -172,7 +152,6 @@ const generateData = (segments: Record<string, TimeSegment>) => {
         const pseudoRandom = (seed: number) => Math.abs(Math.sin(i * seed));
 
         if (status === 'work' || status === 'productive') {
-            // Mostly productive, but with some noise
             productive = 3.5 + pseudoRandom(1.1);
             if (pseudoRandom(2) > 0.8) {
                 neutral = 0.5 + pseudoRandom(0.5);
@@ -198,7 +177,6 @@ const generateData = (segments: Record<string, TimeSegment>) => {
             }
             apps.unproductive = ['Social Media', 'YouTube'];
         } else if (status === 'idle') {
-            // Empty - no activity
             productive = 0;
             neutral = 0;
             unproductive = 0;
@@ -233,20 +211,20 @@ const ActivityGraph = ({ segments }: { segments: Record<string, TimeSegment> }) 
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                     data={activityData}
-                    // IMPORTANT: align manually with the bottom chart which mocks 0-540
+                    
                     margin={{
                         top: 0,
                         right: 0,
-                        left: 0, // Align with Timeline
+                        left: 0,
                         bottom: 0,
                     }}
-                    barCategoryGap={1} // thin bars
+                    barCategoryGap={1}
                 >
                     <XAxis
                         dataKey="minutesFromStart"
                         type="number"
-                        domain={[0, 540]} // Match domain exactly
-                        hide // Hide X axis as it is shared
+                        domain={[0, 540]}
+                        hide
                     />
                     <YAxis
                         stroke="#999"
@@ -255,12 +233,12 @@ const ActivityGraph = ({ segments }: { segments: Record<string, TimeSegment> }) 
                         axisLine={false}
                         tickFormatter={(val) => {
                             const num = parseFloat(val);
-                            const safe = Math.min(Math.max(num, 0), 5);  // clamp 0–5
+                            const safe = Math.min(Math.max(num, 0), 5);
                             return `${Math.round((safe / 5) * 100)}%`;
                         }}
-                        ticks={[0, 1.25, 2.5, 3.75, 5]} // Explicit ticks 0, 25, 50, 75, 100
+                        ticks={[0, 1.25, 2.5, 3.75, 5]}
                         domain={[0, 5]}
-                        width={35} // Increased slightly to fit "100%"
+                        width={35} 
                     />
                     <Tooltip
                         content={<CustomTooltip hoveredStack={hoveredStack} />}

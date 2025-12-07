@@ -4,8 +4,8 @@ import { X, Clock } from 'lucide-react';
 interface OfflineRequestModalProps {
     isOpen: boolean;
     onClose: () => void;
-    startTime: string; // e.g., "04:19:18 PM"
-    endTime: string;   // e.g., "04:37:35 PM"
+    startTime: string;
+    endTime: string;
     defaultProductivity?: 'productive' | 'unproductive' | 'neutral';
     onSave: (productivity: string, description: string) => void;
 }
@@ -13,7 +13,7 @@ interface OfflineRequestModalProps {
 const OfflineRequestModal = ({ isOpen, onClose, startTime, endTime, defaultProductivity = 'productive', onSave }: OfflineRequestModalProps) => {
     const [description, setDescription] = useState('');
     const [productivity, setProductivity] = useState(defaultProductivity);
-    // In a real app, this range might be dynamic based on a slider value
+    
     const [rangeValue, setRangeValue] = useState(50);
 
     if (!isOpen) return null;
@@ -53,15 +53,13 @@ const OfflineRequestModal = ({ isOpen, onClose, startTime, endTime, defaultProdu
                     </div>
                     <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={20} color="#666" /></button>
                 </div>
-
-                {/* Time Display */}
+                
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '30px', fontWeight: '500', color: '#333' }}>
                     <span style={{ border: '1px solid #eee', padding: '8px 16px', borderRadius: '6px' }}>{startTime}</span>
                     <span style={{ display: 'flex', alignItems: 'center' }}>—</span>
                     <span style={{ border: '1px solid #eee', padding: '8px 16px', borderRadius: '6px' }}>{endTime}</span>
                 </div>
 
-                {/* Slider (Visual only for mock) */}
                 <div style={{ marginBottom: '30px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <div style={{ width: '20px', height: '20px', background: '#ff9800', borderRadius: '4px' }}></div>
                     <input
@@ -75,7 +73,6 @@ const OfflineRequestModal = ({ isOpen, onClose, startTime, endTime, defaultProdu
                     <div style={{ width: '20px', height: '20px', background: '#ff9800', borderRadius: '4px' }}></div>
                 </div>
 
-                {/* Description */}
                 <div style={{ marginBottom: '24px' }}>
                     <input
                         type="text"
@@ -92,7 +89,6 @@ const OfflineRequestModal = ({ isOpen, onClose, startTime, endTime, defaultProdu
                     />
                 </div>
 
-                {/* Productivity Type */}
                 <div style={{ marginBottom: '30px' }}>
                     <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '10px', color: '#333' }}>Productivity</p>
                     <div style={{ display: 'flex', gap: '12px' }}>
@@ -143,7 +139,6 @@ const OfflineRequestModal = ({ isOpen, onClose, startTime, endTime, defaultProdu
                     </div>
                 </div>
 
-                {/* Buttons */}
                 <div style={{ display: 'flex', gap: '12px' }}>
                     <button
                         onClick={onClose}
